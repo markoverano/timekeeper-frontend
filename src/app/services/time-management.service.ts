@@ -1,13 +1,28 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
+
+export interface AttendanceEntry {
+  id: number;
+  date: string;
+  timeIn: string | '';
+  timeOut: string | '';
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class TimeManagementService {
+
+  private apiUrl: string;
+
   private attendanceEntries: Array<{ date: string, timeIn: string, timeOut: string }> = [];
   private isAdmin: boolean = false;
 
-  constructor() { }
+  constructor(private http: HttpClient) {
+    this.apiUrl = environment.attendanceAPI;
+  }
 
   getCurrentTime(): string {
     return new Date().toLocaleTimeString();
@@ -40,5 +55,28 @@ export class TimeManagementService {
 
   updateAttendanceEntry(index: number, timeIn: string, timeOut: string) {
     this.attendanceEntries[index] = { ...this.attendanceEntries[index], timeIn, timeOut };
+  }
+
+  //___________
+
+  getAllEntries(): Observable<AttendanceEntry[]> {
+    debugger;
+    return this.http.get<AttendanceEntry[]>(this.apiUrl);
+  }
+
+  getEntryById(id: number): Observable<AttendanceEntry> {
+    return this.http.get<AttendanceEntry>(`${this.apiUrl}/${id}`);
+  }
+
+  addEntry(entry: AttendanceEntry): Observable<AttendanceEntry> {
+    return this.http.post<AttendanceEntry>(this.apiUrl, entry);
+  }
+
+  updateEntry(entry: AttendanceEntry): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${entry.id}`, entry);
+  }
+
+  deleteEntry(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

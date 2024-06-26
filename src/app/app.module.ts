@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { TimeManagementComponent } from './components/time-management/time-management.component';
 import { TimeManagementService } from './services/time-management.service';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { FormsModule } from '@angular/forms';
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [TimeManagementService],
   bootstrap: [AppComponent]

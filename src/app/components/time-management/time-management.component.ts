@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TimeManagementService } from 'src/app/services/time-management.service';
+import { AttendanceEntry, TimeManagementService } from 'src/app/services/time-management.service';
 
 @Component({
   selector: 'app-time-management',
@@ -9,37 +9,71 @@ import { TimeManagementService } from 'src/app/services/time-management.service'
 export class TimeManagementComponent implements OnInit {
   currentTime: string = '';
   isTimedIn: boolean = false;
+  attendanceEntries: AttendanceEntry[] = [];
+  isAdmin: boolean = false;
 
   constructor(private timeMgtSvc: TimeManagementService) { }
 
   ngOnInit(): void {
     setInterval(() => {
-      this.currentTime = this.timeMgtSvc.getCurrentTime();
+      this.currentTime = new Date().toLocaleTimeString();
     }, 1000);
+    this.loadEntries();
+  }
+
+  loadEntries() {
+    this.timeMgtSvc.getAllEntries().subscribe(entries => {
+      this.attendanceEntries = entries;
+    });
   }
 
   toggleTime() {
     if (this.isTimedIn) {
-      this.timeMgtSvc.timeOut();
+      this.timeOut();
     } else {
-      this.timeMgtSvc.timeIn();
+      this.timeIn();
     }
     this.isTimedIn = !this.isTimedIn;
   }
 
+  timeIn() {
+    const entry: AttendanceEntry = {
+      id: 0,
+      date: new Date().toLocaleDateString(),
+      timeIn: new Date().toLocaleTimeString(),
+      timeOut: ''
+    };
+    this.timeMgtSvc.addEntry(entry).subscribe(() => {
+      this.loadEntries();
+    });
+  }
+
+  timeOut() {
+    const latestEntry = this.attendanceEntries[this.attendanceEntries.length - 1];
+    if (latestEntry) {
+      latestEntry.timeOut = new Date().toLocaleTimeString();
+      this.timeMgtSvc.updateEntry(latestEntry).subscribe(() => {
+        this.loadEntries();
+      });
+    }
+  }
+
   switchAdmin() {
-    this.timeMgtSvc.switchAdmin();
+    this.isAdmin = !this.isAdmin;
   }
 
   updateEntry(index: number, timeIn: string, timeOut: string) {
-    this.timeMgtSvc.updateAttendanceEntry(index, timeIn, timeOut);
+    const entry = this.attendanceEntries[index];
+    entry.timeIn = timeIn;
+    entry.timeOut = timeOut;
+    this.timeMgtSvc.updateEntry(entry).subscribe(() => {
+      this.loadEntries();
+    });
   }
 
-  get isAdmin() {
-    return this.timeMgtSvc.getIsAdmin();
-  }
-
-  get attendanceEntries() {
-    return this.timeMgtSvc.getAttendanceEntries();
+  deleteEntry(id: number) {
+    this.timeMgtSvc.deleteEntry(id).subscribe(() => {
+      this.loadEntries();
+    });
   }
 }
