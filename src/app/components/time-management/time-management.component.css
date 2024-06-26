@@ -1,0 +1,44 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    max-width: 800px;
+    margin: 20px auto;
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .current-time {
+    font-size: 3em;
+    color: #333;
+  }
+  
+  .button-group {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .btn {
+    margin-right: 10px;
+  }
+  
+  .table {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .form-control {
+    width: 100%;
+  }
+  
+  th, td {
+    text-align: center;
+  }
+  
+  th {
+    background-color: #f8f9fa;
+  }
+  
