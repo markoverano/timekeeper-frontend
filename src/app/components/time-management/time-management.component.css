@@ -42,3 +42,12 @@
     background-color: #f8f9fa;
   }
   
+  .btn-warning, .btn-danger {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .fas {
+    margin-right: 0;
+  }
+  

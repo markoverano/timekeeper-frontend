@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AttendanceEntry, TimeManagementService } from 'src/app/services/time-management.service';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 
 @Component({
   selector: 'app-time-management',
@@ -16,14 +18,14 @@ export class TimeManagementComponent implements OnInit {
 
   ngOnInit(): void {
     setInterval(() => {
-      this.currentTime = new Date().toLocaleTimeString();
+      this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }, 1000);
     this.loadEntries();
   }
 
   loadEntries() {
     this.timeMgtSvc.getAllEntries().subscribe(entries => {
-      this.attendanceEntries = entries;
+      this.attendanceEntries = entries.map(entry => ({ ...entry, isEditing: false }));
     });
   }
 
@@ -37,13 +39,7 @@ export class TimeManagementComponent implements OnInit {
   }
 
   timeIn() {
-    const entry: AttendanceEntry = {
-      id: 0,
-      date: new Date().toLocaleDateString(),
-      timeIn: new Date().toLocaleTimeString(),
-      timeOut: ''
-    };
-    this.timeMgtSvc.addEntry(entry).subscribe(() => {
+    this.timeMgtSvc.addEntry(1).subscribe(() => {
       this.loadEntries();
     });
   }
@@ -51,7 +47,7 @@ export class TimeManagementComponent implements OnInit {
   timeOut() {
     const latestEntry = this.attendanceEntries[this.attendanceEntries.length - 1];
     if (latestEntry) {
-      latestEntry.timeOut = new Date().toLocaleTimeString();
+      latestEntry.timeOut = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       this.timeMgtSvc.updateEntry(latestEntry).subscribe(() => {
         this.loadEntries();
       });
@@ -62,10 +58,12 @@ export class TimeManagementComponent implements OnInit {
     this.isAdmin = !this.isAdmin;
   }
 
-  updateEntry(index: number, timeIn: string, timeOut: string) {
-    const entry = this.attendanceEntries[index];
-    entry.timeIn = timeIn;
-    entry.timeOut = timeOut;
+  editEntry(entry: AttendanceEntry) {
+    entry.isEditing = true;
+  }
+
+  saveEdit(entry: AttendanceEntry) {
+    entry.isEditing = false;
     this.timeMgtSvc.updateEntry(entry).subscribe(() => {
       this.loadEntries();
     });
@@ -75,5 +73,32 @@ export class TimeManagementComponent implements OnInit {
     this.timeMgtSvc.deleteEntry(id).subscribe(() => {
       this.loadEntries();
     });
+  }
+
+  exportToPDF() {
+    const doc = new jsPDF();
+  
+    const employeeName = 'John Doe';
+    doc.text(`Employee: ${employeeName}`, 10, 10);
+  
+    const columns = [
+      { header: 'Date', dataKey: 'date' },
+      { header: 'Time In', dataKey: 'timeIn' },
+      { header: 'Time Out', dataKey: 'timeOut' }
+    ];
+  
+    const data = this.attendanceEntries.map(entry => ({
+      date: entry.formattedEntryDate,
+      timeIn: entry.formattedTimeIn || '',
+      timeOut: entry.timeOut || ''
+    }));
+  
+    (doc as any).autoTable({
+      columns: columns,
+      body: data,
+      startY: 20
+    });
+  
+    doc.save(`${new Date().toLocaleDateString()} - Time Entries.pdf`);
   }
 }

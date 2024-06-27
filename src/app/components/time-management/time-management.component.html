@@ -16,18 +16,27 @@
         </thead>
         <tbody>
             <tr *ngFor="let entry of attendanceEntries; let i = index">
-                <td>{{ entry.date }}</td>
+                <td>{{ entry.formattedEntryDate }}</td>
                 <td>
-                    <input *ngIf="isAdmin" [(ngModel)]="entry.timeIn"
-                        (change)="updateEntry(i, entry.timeIn, entry.timeOut)" type="text" class="form-control" />
-                    <span *ngIf="!isAdmin">{{ entry.timeIn }}</span>
+                    <span *ngIf="!entry.isEditing">{{ entry.formattedTimeIn }}</span>
+                    <input *ngIf="entry.isEditing" [(ngModel)]="entry.formattedTimeIn" (blur)="saveEdit(entry)"
+                        type="text" class="form-control" />
                 </td>
                 <td>
-                    <input *ngIf="isAdmin" [(ngModel)]="entry.timeOut"
-                        (change)="updateEntry(i, entry.timeIn, entry.timeOut)" type="text" class="form-control" />
-                    <span *ngIf="!isAdmin">{{ entry.timeOut }}</span>
+                    <span *ngIf="!entry.isEditing">{{ entry.timeOut }}</span>
+                    <input *ngIf="entry.isEditing" [(ngModel)]="entry.timeOut" (blur)="saveEdit(entry)" type="text"
+                        class="form-control" />
+                </td>
+                <td *ngIf="isAdmin">
+                    <div *ngIf="!entry.isEditing" (click)="editEntry(entry)" class="btn btn-warning">
+                        <i class="fas fa-pencil-alt"></i>
+                      </div>
+                      <button (click)="deleteEntry(entry.id)" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
                 </td>
             </tr>
         </tbody>
+        <button *ngIf="isAdmin" (click)="exportToPDF()">Export to PDF</button>
     </table>
 </div>

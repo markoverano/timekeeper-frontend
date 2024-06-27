@@ -8,6 +8,10 @@ export interface AttendanceEntry {
   date: string;
   timeIn: string | '';
   timeOut: string | '';
+  formattedTimeIn: string | '';
+  formattedTimeOut: string | '';
+  isEditing: boolean;
+  formattedEntryDate: string | '';
 }
 
 @Injectable({
@@ -60,7 +64,6 @@ export class TimeManagementService {
   //___________
 
   getAllEntries(): Observable<AttendanceEntry[]> {
-    debugger;
     return this.http.get<AttendanceEntry[]>(this.apiUrl);
   }
 
@@ -68,8 +71,8 @@ export class TimeManagementService {
     return this.http.get<AttendanceEntry>(`${this.apiUrl}/${id}`);
   }
 
-  addEntry(entry: AttendanceEntry): Observable<AttendanceEntry> {
-    return this.http.post<AttendanceEntry>(this.apiUrl, entry);
+  addEntry(id: number): Observable<AttendanceEntry> {
+    return this.http.post<AttendanceEntry>(`${this.apiUrl}/${id}`, {});
   }
 
   updateEntry(entry: AttendanceEntry): Observable<void> {
