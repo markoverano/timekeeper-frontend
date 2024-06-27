@@ -6,18 +6,29 @@ import { TimeManagementComponent } from './components/time-management/time-manag
 import { TimeManagementService } from './services/time-management.service';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { EmployeesComponent } from './components/employees/employees.component';
+import { LoginComponent } from './auth/login/login.component';
+import { AuthGuard } from './auth/auth.guard';
+import { RouterModule } from '@angular/router';
+import { AppRoutingModule } from 'src/app-routing.module';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TimeManagementComponent
+    TimeManagementComponent,
+    EmployeesComponent,
+    LoginComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    AppRoutingModule,
+    RouterModule
   ],
-  providers: [TimeManagementService],
+  providers: [AuthGuard, TimeManagementService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

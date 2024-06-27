@@ -1,0 +1,26 @@
+.navbar {
+    border: none;
+  }
+  
+  .navbar-nav {
+    margin-left: auto;
+  }
+  
+  .nav-link {
+    cursor: pointer;
+  }
+  
+  .container {
+    padding-top: 20px;
+  }
+  
+  .nav-item.active .nav-link {
+    font-weight: bold;
+  }
+  
+  .nav-divider {
+    display: inline-block;
+    margin: 6px 5px;
+    color: grey;
+  }
+  

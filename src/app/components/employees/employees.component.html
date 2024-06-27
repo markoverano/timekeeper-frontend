@@ -1,0 +1,50 @@
+<div class="container">
+    <h2>Add Employee</h2>
+    <form (ngSubmit)="addEmployee()" class="employee-form">
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" class="form-control" id="firstName" required
+               [(ngModel)]="newEmployee.firstName" name="firstName">
+      </div>
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" class="form-control" id="lastName" required
+               [(ngModel)]="newEmployee.lastName" name="lastName">
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" required
+               [(ngModel)]="newEmployee.email" name="email">
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input type="text" class="form-control" id="phone" required
+               [(ngModel)]="newEmployee.phone" name="phone">
+      </div>
+      <div class="form-group">
+        <label for="roleId">Role</label>
+        <select class="form-control" id="roleId" required
+                [(ngModel)]="newEmployee.roleId" name="roleId">
+          <option value="1">Staff</option>
+          <option value="2">Admin</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Add Employee</button>
+    </form>
+  
+    <div style="margin-top: 20px;">
+      <hr>
+      <h2>Employees List</h2>
+      <ul class="list-group">
+        <li class="list-group-item employee-item" *ngFor="let employee of employees">
+          <div class="employee-details">
+            <div class="employee-name">{{ employee.firstName }} {{ employee.lastName }}</div>
+            <div class="employee-email">{{ employee.email }}</div>
+            <div class="employee-phone">{{ employee.phone }}</div>
+            <div class="employee-role">{{ employee.roleId === 1 ? 'Staff' : 'Admin' }}</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  

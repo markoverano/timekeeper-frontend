@@ -1,8 +1,11 @@
 <div class="container">
-    <h1 class="current-time">{{ currentTime }}</h1>
+    <h1 *ngIf="currentTime" class="current-time">
+        <span>{{ currentTime.slice(0, 2) }}</span><span class="blink">:</span><span>{{ currentTime.slice(3, 8)
+            }}</span><span>{{ currentTime.slice(8) }}</span>
+    </h1>
+
     <div class="button-group">
         <button (click)="toggleTime()" class="btn btn-primary">{{ isTimedIn ? 'Time Out' : 'Time In' }}</button>
-        <button (click)="switchAdmin()" class="btn btn-secondary">Switch Admin</button>
     </div>
 
     <table class="table table-striped">
@@ -30,10 +33,10 @@
                 <td *ngIf="isAdmin">
                     <div *ngIf="!entry.isEditing" (click)="editEntry(entry)" class="btn btn-warning">
                         <i class="fas fa-pencil-alt"></i>
-                      </div>
-                      <button (click)="deleteEntry(entry.id)" class="btn btn-danger">
+                    </div>
+                    <button (click)="deleteEntry(entry.id)" class="btn btn-danger">
                         <i class="fas fa-trash-alt"></i>
-                      </button>
+                    </button>
                 </td>
             </tr>
         </tbody>

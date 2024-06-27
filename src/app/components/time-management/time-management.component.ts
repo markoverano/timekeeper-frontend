@@ -54,10 +54,6 @@ export class TimeManagementComponent implements OnInit {
     }
   }
 
-  switchAdmin() {
-    this.isAdmin = !this.isAdmin;
-  }
-
   editEntry(entry: AttendanceEntry) {
     entry.isEditing = true;
   }
