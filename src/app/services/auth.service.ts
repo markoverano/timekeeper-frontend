@@ -1,20 +1,51 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private apiUrl = `${environment.authAPI}`;
 
-  private currentUserRole: string = 'admin'; //TODO
+  constructor(private http: HttpClient, private router: Router) { }
 
-  constructor() { }
+  login(email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/login`, { email, password })
+      .pipe(tap(response => {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('userId', response.userId);
+        localStorage.setItem('employeeId', response.employeeId);
+        localStorage.setItem('permissions', JSON.stringify(response.permissions));
+        localStorage.setItem('role', response.userRole);
+      }));
+  }
 
-  getUserRole(): string {
-    return this.currentUserRole;
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
-    //TODO
-    return true;
+    return !!localStorage.getItem('token');
+  }
+
+  getUserRole(): string {
+    return localStorage.getItem('role') || '';
+  }
+
+  getEmployeeId(): number {
+    return parseInt(localStorage.getItem('employeeId') || '0');
+  }
+
+  getPermissions(): string[] {
+    return JSON.parse(localStorage.getItem('permissions') || '[]');
+  }
+
+  isAdmin(): boolean {
+    return this.getUserRole() === 'Admin';
   }
 }

@@ -15,7 +15,7 @@ export class HomeComponent {
   selectedTab: string = 'time';
 
   constructor(private authService: AuthService, private router: Router) {
-    this.isAdmin = false;
+    this.isAdmin = this.authService.isAdmin();
   }
 
   selectTab(tab: string) {

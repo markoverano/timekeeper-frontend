@@ -14,6 +14,11 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) { }
 
   login() {
-    this.router.navigate(['/home']);
+    this.authService.login(this.email, this.password).subscribe((res) => {
+      if (res) {
+        const role = this.authService.getUserRole();
+        this.router.navigate(['/home', { outlets: { primary: (role === 'admin' ? 'employees' : 'timein') } }]);
+      }
+    });
   }
 }

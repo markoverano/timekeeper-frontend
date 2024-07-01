@@ -22,7 +22,6 @@ export class TimeManagementService {
   private apiUrl: string;
 
   private attendanceEntries: Array<{ date: string, timeIn: string, timeOut: string }> = [];
-  private isAdmin: boolean = false;
 
   constructor(private http: HttpClient) {
     this.apiUrl = environment.attendanceAPI;
@@ -49,16 +48,12 @@ export class TimeManagementService {
     }
   }
 
-  switchAdmin() {
-    this.isAdmin = !this.isAdmin;
-  }
-
-  getIsAdmin() {
-    return this.isAdmin;
-  }
-
   updateAttendanceEntry(index: number, timeIn: string, timeOut: string) {
     this.attendanceEntries[index] = { ...this.attendanceEntries[index], timeIn, timeOut };
+  }
+
+  updateEntries(entries: AttendanceEntry[]) {
+    this.attendanceEntries = entries.map(entry => ({ ...entry, isEditing: false }));
   }
 
   //___________
@@ -69,6 +64,10 @@ export class TimeManagementService {
 
   getEntryById(id: number): Observable<AttendanceEntry> {
     return this.http.get<AttendanceEntry>(`${this.apiUrl}/${id}`);
+  }
+  
+  getEntriesByEmployeeIdAsync(id: number): Observable<AttendanceEntry[]> {
+    return this.http.get<AttendanceEntry[]>(`${this.apiUrl}/${id}/entries`);
   }
 
   addEntry(id: number): Observable<AttendanceEntry> {

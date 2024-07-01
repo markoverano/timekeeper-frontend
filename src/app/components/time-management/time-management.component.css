@@ -1,65 +1,84 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    max-width: 800px;
-    margin: 20px auto;
-    position: absolute;
-    top: 50px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  
-  .current-time {
-    font-size: 3em;
-    color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  max-width: 800px;
+  margin: 20px auto;
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
 }
+
+.current-time {
+  font-size: 3em;
+  color: #333;
+}
+
 .blink {
   animation: blink-animation 1s step-end infinite;
 }
 
 @keyframes blink-animation {
   0%, 49.9% {
-    opacity: 1;
+      opacity: 1;
   }
   50%, 100% {
-    opacity: 0;
+      opacity: 0;
   }
 }
-  
-  .button-group {
-    margin-top: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .btn {
-    padding: 10px 40px;
-  }
-  
-  .table {
-    width: 100%;
-    margin-bottom: 20px;
-  }
-  
-  .form-control {
-    width: 100%;
-  }
-  
-  th, td {
-    text-align: center;
-  }
-  
-  th {
-    background-color: #f8f9fa;
-  }
-  
-  .btn-warning, .btn-danger {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-  }
-  
-  .fas {
-    margin-right: 0;
-  }
-  
+
+.button-group {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.btn {
+  padding: 10px 40px;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.form-control {
+  width: 100%;
+}
+
+th, td {
+  text-align: center;
+}
+
+th {
+  background-color: #f8f9fa;
+}
+
+.btn-warning, .btn-danger {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.fas {
+  margin-right: 0;
+}
+
+/* Add these new styles */
+.no-entries {
+  text-align: center;
+  font-size: 1.5em;
+  color: #888;
+  margin: 20px 0;
+}
+
+.export-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+}
+
+.hidden {
+  display: none;
+}
