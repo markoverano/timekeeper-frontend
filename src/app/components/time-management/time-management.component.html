@@ -8,9 +8,20 @@
         <button (click)="toggleTime()" class="btn btn-primary">{{ isTimedIn ? 'Time Out' : 'Time In' }}</button>
     </div>
 
+    <div *ngIf="isAdmin" class="employee-dropdown">
+        <label for="employeeSelect" class="styled-label">Select Employee: </label>
+        <select id="employeeSelect" [(ngModel)]="selectedEmployee" (change)="onEmployeeChange($event)"
+            class="styled-select">
+            <option value="0">All</option>
+            <option *ngFor="let employee of employees" [value]="employee.id">{{ employee.firstName }} {{
+                employee.lastName }}</option>
+        </select>
+    </div>
+
     <table *ngIf="attendanceEntries.length > 0" class="table table-striped">
         <thead>
             <tr>
+                <th *ngIf="isAdmin && selectedEmployee == 0">Employee</th>
                 <th>Date</th>
                 <th>Time In</th>
                 <th>Time Out</th>
@@ -19,28 +30,45 @@
         </thead>
         <tbody>
             <tr *ngFor="let entry of attendanceEntries; let i = index">
+                <td *ngIf="isAdmin && selectedEmployee == 0">{{ entry.employeeName }}</td>
                 <td>{{ entry.formattedEntryDate }}</td>
-                <td>
-                    <span *ngIf="!entry.isEditing">{{ entry.formattedTimeIn }}</span>
-                    <input *ngIf="entry.isEditing" [(ngModel)]="entry.formattedTimeIn" (blur)="saveEdit(entry)"
-                        type="text" class="form-control" />
+                <td *ngIf="entry.isEditing" class="edit-mode">
+                    <div class="time-edit">
+                        <input [(ngModel)]="entry.parsedTimeIn.hour" type="number" min="1" max="12" pattern="\d{2}"
+                            class="form-control">
+                        <input [(ngModel)]="entry.parsedTimeIn.minutes" type="number" min="0" max="59" pattern="\d{2}"
+                            class="form-control">
+                        <select [(ngModel)]="entry.parsedTimeIn.period" class="form-control">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                        <input [(ngModel)]="entry.parsedTimeOut.hour" type="number" min="1" max="12" pattern="\d{2}"
+                            class="form-control">
+                        <input [(ngModel)]="entry.parsedTimeOut.minutes" type="number" min="0" max="59" pattern="\d{2}"
+                            class="form-control">
+                        <select [(ngModel)]="entry.parsedTimeOut.period" class="form-control">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                    </div>
                 </td>
-                <td>
-                    <span *ngIf="!entry.isEditing">{{ entry.timeOut }}</span>
-                    <input *ngIf="entry.isEditing" [(ngModel)]="entry.timeOut" (blur)="saveEdit(entry)" type="text"
-                        class="form-control" />
-                </td>
+                <td *ngIf="!entry.isEditing">{{ entry.formattedTimeIn }}</td>
+                <td *ngIf="!entry.isEditing">{{ entry.formattedTimeOut }}</td>
                 <td *ngIf="isAdmin">
+                    <div *ngIf="entry.isEditing" (click)="saveEdit(entry)" class="btn btn-success">
+                        <i class="fas fa-save"></i>
+                    </div>
+                    <div *ngIf="entry.isEditing" (click)="cancelEdit(entry)" class="btn btn-danger">
+                        <i class="fas fa-times"></i>
+                    </div>
                     <div *ngIf="!entry.isEditing" (click)="editEntry(entry)" class="btn btn-warning">
                         <i class="fas fa-pencil-alt"></i>
                     </div>
-                    <button (click)="deleteEntry(entry.id)" class="btn btn-danger">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
                 </td>
             </tr>
         </tbody>
     </table>
+
     <div *ngIf="attendanceEntries.length === 0" class="no-entries">No entries found</div>
     <button *ngIf="isAdmin && attendanceEntries.length > 0" (click)="exportToPDF()"
         class="btn btn-primary export-button">Export to PDF</button>

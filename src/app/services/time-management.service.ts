@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
-
+import { Observable, catchError } from 'rxjs';
 export interface AttendanceEntry {
   id: number;
+  employeeId: number;
   date: string;
   timeIn: string | '';
   timeOut: string | '';
@@ -12,6 +12,21 @@ export interface AttendanceEntry {
   formattedTimeOut: string | '';
   isEditing: boolean;
   formattedEntryDate: string | '';
+  employeeName: string | '';
+  timeInString: string | '';
+  timeOutString: string | '';
+
+  parsedTimeIn: {
+    hour: number;
+    minutes: string;
+    period: string;
+  };
+
+  parsedTimeOut: {
+    hour: number;
+    minutes: string;
+    period: string;
+  };
 }
 
 @Injectable({
@@ -27,55 +42,36 @@ export class TimeManagementService {
     this.apiUrl = environment.attendanceAPI;
   }
 
-  getCurrentTime(): string {
-    return new Date().toLocaleTimeString();
-  }
-
-  getAttendanceEntries() {
-    return this.attendanceEntries;
-  }
-
-  timeIn() {
-    const date = new Date().toLocaleDateString();
-    const timeIn = new Date().toLocaleTimeString();
-    this.attendanceEntries.push({ date, timeIn, timeOut: '' });
-  }
-
-  timeOut() {
-    const latestEntry = this.attendanceEntries[this.attendanceEntries.length - 1];
-    if (latestEntry) {
-      latestEntry.timeOut = new Date().toLocaleTimeString();
-    }
-  }
-
-  updateAttendanceEntry(index: number, timeIn: string, timeOut: string) {
-    this.attendanceEntries[index] = { ...this.attendanceEntries[index], timeIn, timeOut };
-  }
-
   updateEntries(entries: AttendanceEntry[]) {
     this.attendanceEntries = entries.map(entry => ({ ...entry, isEditing: false }));
   }
 
-  //___________
-
   getAllEntries(): Observable<AttendanceEntry[]> {
     return this.http.get<AttendanceEntry[]>(this.apiUrl);
   }
-
   getEntryById(id: number): Observable<AttendanceEntry> {
     return this.http.get<AttendanceEntry>(`${this.apiUrl}/${id}`);
   }
-  
+
   getEntriesByEmployeeIdAsync(id: number): Observable<AttendanceEntry[]> {
     return this.http.get<AttendanceEntry[]>(`${this.apiUrl}/${id}/entries`);
   }
 
-  addEntry(id: number): Observable<AttendanceEntry> {
-    return this.http.post<AttendanceEntry>(`${this.apiUrl}/${id}`, {});
+  addEntry(employeeId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${employeeId}`, {}).pipe(
+      catchError(error => {
+        console.error('Error:', error);
+        throw error;
+      })
+    );
   }
 
   updateEntry(entry: AttendanceEntry): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${entry.id}`, entry);
+  }
+
+  timeOut(employeeId: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/timeout`, employeeId);
   }
 
   deleteEntry(id: number): Observable<void> {

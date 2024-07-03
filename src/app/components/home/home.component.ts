@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -14,7 +13,7 @@ export class HomeComponent {
   showEmployeeManagement: boolean = false;
   selectedTab: string = 'time';
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService) {
     this.isAdmin = this.authService.isAdmin();
   }
 
@@ -23,6 +22,6 @@ export class HomeComponent {
   }
 
   logout() {
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 }

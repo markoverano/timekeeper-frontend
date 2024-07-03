@@ -1,14 +1,9 @@
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  max-width: 800px;
+  max-width: 900px;
   margin: 20px auto;
-  position: absolute;
-  top: 50px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  padding: 20px;
+  text-align: center;
 }
 
 .current-time {
@@ -40,45 +35,97 @@
 
 .table {
   width: 100%;
-  margin-bottom: 20px;
 }
 
 .form-control {
-  width: 100%;
+  width: auto;
+  margin-right: 10px;
 }
 
 th, td {
   text-align: center;
+  vertical-align: middle;
+  padding: 8px;
 }
 
-th {
+.th {
   background-color: #f8f9fa;
 }
 
-.btn-warning, .btn-danger {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+tr {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+th, td {
+  flex: 1;
 }
 
 .fas {
   margin-right: 0;
 }
 
-/* Add these new styles */
-.no-entries {
-  text-align: center;
-  font-size: 1.5em;
-  color: #888;
-  margin: 20px 0;
-}
-
 .export-button {
   position: absolute;
-  bottom: 20px;
+  bottom: -20px;
   right: 20px;
   padding: 10px 20px;
+  background-color: white;
+  color: black;
 }
 
-.hidden {
-  display: none;
+.employee-dropdown {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-left: 5px;
+}
+
+.styled-select {
+  appearance: none;
+  padding: 8px 16px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.styled-select:hover {
+  background-color: #e9ecef;
+}
+
+.styled-select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.edit-mode {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.time-edit {
+  display: flex;
+  align-items: center;
+}
+
+.form-control {
+  width: 60px;
+}
+
+.btn-success,
+.btn-cancel,
+.btn-warning,
+.btn-danger {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  margin-right: 5px;
+}
+
+.fas {
+  margin-right: 0;
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 export interface Employee {
@@ -8,7 +8,7 @@ export interface Employee {
   firstName: string;
   lastName: string;
   email: string;
-  phone: string;
+  phoneNumber: string;
   roleId: number;
 }
 
@@ -17,10 +17,10 @@ export interface Employee {
 })
 export class EmployeeManagementService {
 
-  private apiUrl = `${environment.attendanceAPI}/employees`;
+  private apiUrl: string;
 
   constructor(private http: HttpClient) {
-    this.apiUrl = environment.attendanceAPI;
+    this.apiUrl = environment.employeesAPI;
   }
 
   getAllEmployees(): Observable<Employee[]> {
@@ -31,15 +31,12 @@ export class EmployeeManagementService {
     return this.http.get<Employee>(`${this.apiUrl}/${id}`);
   }
 
-  addEmployee(employee: Employee): Observable<Employee> {
-    return this.http.post<Employee>(this.apiUrl, employee);
-  }
-
-  updateEmployee(employee: Employee): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${employee.id}`, employee);
-  }
-
-  deleteEmployee(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  addEmployee(employeeDto: Employee, password: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}?password=${password}`, employeeDto).pipe(
+      catchError(error => {
+        console.error('Error:', error);
+        throw error;
+      })
+    );
   }
 }
