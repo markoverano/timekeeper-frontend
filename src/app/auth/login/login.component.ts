@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -16,6 +15,7 @@ export class LoginComponent {
   login() {
     this.authService.login(this.email, this.password).subscribe((res) => {
       if (res) {
+        this.authService.setToken(res.token);
         const role = this.authService.getUserRole();
         this.router.navigate(['/home', { outlets: { primary: (role === 'admin' ? 'employees' : 'timein') } }]);
       }

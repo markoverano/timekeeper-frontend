@@ -48,4 +48,15 @@ export class AuthService {
   isAdmin(): boolean {
     return this.getUserRole() === 'Admin';
   }
+  setToken(token: string): void {
+    localStorage.setItem('token', token);
+  }
+
+  clearToken(): void {
+    localStorage.removeItem('token');
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
 }
